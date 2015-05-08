@@ -197,8 +197,14 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 
 - (void)_updateHueSatWithMovement:(CGPoint)position
 {
+    if (self.hueSatImage.frame.size.width > FLT_EPSILON)
+    {
 	currentHue = (position.x - self.hueSatImage.frame.origin.x) / self.hueSatImage.frame.size.width;
+    }
+    if (self.hueSatImage.frame.size.height > FLT_EPSILON)
+    {
 	currentSaturation = 1.0 -  (position.y - self.hueSatImage.frame.origin.y) / self.hueSatImage.frame.size.height;
+    }
     
 	UIColor *_tcolor = [UIColor colorWithHue:currentHue
                                   saturation:currentSaturation
@@ -218,7 +224,10 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 
 - (void)_updateBrightnessWithMovement:(CGPoint)position
 {
+    if (self.gradientView.frame.size.width > FLT_EPSILON)
+    {
 	currentBrightness = 1.0 - ((position.x - self.gradientView.frame.origin.x)/self.gradientView.frame.size.width) ;
+    }
 	
 	UIColor *_tcolor = [UIColor colorWithHue:currentHue
                                   saturation:currentSaturation
