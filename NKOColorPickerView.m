@@ -163,6 +163,10 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 
 - (void)_updateBrightnessPosition
 {
+    if (_color == nil)
+    {
+        return;
+    }
     [_color getHue:nil saturation:nil brightness:&currentBrightness alpha:nil];
     
     CGPoint brightnessPosition;
@@ -199,11 +203,11 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 {
     if (self.hueSatImage.frame.size.width > FLT_EPSILON)
     {
-	currentHue = (position.x - self.hueSatImage.frame.origin.x) / self.hueSatImage.frame.size.width;
+        currentHue = (position.x - self.hueSatImage.frame.origin.x) / self.hueSatImage.frame.size.width;
     }
     if (self.hueSatImage.frame.size.height > FLT_EPSILON)
     {
-	currentSaturation = 1.0 -  (position.y - self.hueSatImage.frame.origin.y) / self.hueSatImage.frame.size.height;
+        currentSaturation = 1.0 -  (position.y - self.hueSatImage.frame.origin.y) / self.hueSatImage.frame.size.height;
     }
     
 	UIColor *_tcolor = [UIColor colorWithHue:currentHue
@@ -226,7 +230,7 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 {
     if (self.gradientView.frame.size.width > FLT_EPSILON)
     {
-	currentBrightness = 1.0 - ((position.x - self.gradientView.frame.origin.x)/self.gradientView.frame.size.width) ;
+        currentBrightness = 1.0 - ((position.x - self.gradientView.frame.origin.x)/self.gradientView.frame.size.width) ;
     }
 	
 	UIColor *_tcolor = [UIColor colorWithHue:currentHue
