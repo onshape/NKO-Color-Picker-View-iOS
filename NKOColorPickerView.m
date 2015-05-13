@@ -119,28 +119,32 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 #pragma mark - Public methods
 - (void)setTintColor:(UIColor *)tintColor
 {
-    self.hueSatImage.layer.borderColor = tintColor.CGColor;
-    self.gradientView.layer.borderColor = tintColor.CGColor;
-    self.brightnessIndicator.image = [[UIImage imageNamed:@"nko_brightness_guide"] nko_tintImageWithColor:tintColor];
+    if (tintColor) {
+        self.hueSatImage.layer.borderColor = tintColor.CGColor;
+        self.gradientView.layer.borderColor = tintColor.CGColor;
+        self.brightnessIndicator.image = [[UIImage imageNamed:@"nko_brightness_guide"] nko_tintImageWithColor:tintColor];
+    }
 }
 
 - (void)setColor:(UIColor *)newColor
 {
-    CGFloat hue, saturation;
-    [newColor getHue:&hue saturation:&saturation brightness:nil alpha:nil];
+    if (newColor) {
+        CGFloat hue, saturation;
+        [newColor getHue:&hue saturation:&saturation brightness:nil alpha:nil];
 
-    currentHue = hue;
-    currentSaturation = saturation;
-    [self _setColor:newColor];
-    [self _updateGradientColor];
-    [self _updateBrightnessPosition];
-    [self _updateCrosshairPosition];
+        currentHue = hue;
+        currentSaturation = saturation;
+        [self _setColor:newColor];
+        [self _updateGradientColor];
+        [self _updateBrightnessPosition];
+        [self _updateCrosshairPosition];
+    }
 }
 
 #pragma mark - Private methods
 - (void)_setColor:(UIColor *)newColor
 {
-    if (![_color isEqual:newColor]){
+    if (newColor && ![_color isEqual:newColor]){
         CGFloat brightness;
         [newColor getHue:NULL saturation:NULL brightness:&brightness alpha:NULL];
         CGColorSpaceModel colorSpaceModel = CGColorSpaceGetModel(CGColorGetColorSpace(newColor.CGColor));
@@ -154,7 +158,7 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
         else{
             _color = [newColor copy];
         }
-        
+
         if (self.didChangeColorBlock != nil){
             self.didChangeColorBlock(self.color);
         }
@@ -163,17 +167,15 @@ CGFloat const NKOPickerViewCrossHairshWidthAndHeight    = 38.f;
 
 - (void)_updateBrightnessPosition
 {
-    if (_color == nil)
-    {
-        return;
+    if (_color) {
+        [_color getHue:nil saturation:nil brightness:&currentBrightness alpha:nil];
+
+        CGPoint brightnessPosition;
+        brightnessPosition.x = (1.0-currentBrightness)*self.gradientView.frame.size.width + self.gradientView.frame.origin.x;
+        brightnessPosition.y = self.gradientView.center.y;
+
+        self.brightnessIndicator.center = brightnessPosition;
     }
-    [_color getHue:nil saturation:nil brightness:&currentBrightness alpha:nil];
-    
-    CGPoint brightnessPosition;
-    brightnessPosition.x = (1.0-currentBrightness)*self.gradientView.frame.size.width + self.gradientView.frame.origin.x;
-    brightnessPosition.y = self.gradientView.center.y;
-    
-    self.brightnessIndicator.center = brightnessPosition;
 }
 
 - (void)_updateCrosshairPosition
